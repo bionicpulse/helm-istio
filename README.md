@@ -10,20 +10,27 @@
 
 ## Apply the base chart
 
-k apply -f istio-base-app.yaml -n argocd
+`k apply -f istio-base-app.yaml -n argocd`
 
 ## Apply the istiod chart
 
-k apply -f istio-istiod-app.yaml -n argocd
+`k apply -f istio-istiod-app.yaml -n argocd`
 
 ## Apply the ingress chart
 
-k apply -f istio-ingress-app.yaml -n argocd
+`k apply -f istio-ingress-app.yaml -n argocd`
+
+## Apply the istiod canary preview chart
+
+`k apply -f istio-istiod-canary-app.yaml -n argocd`
 
 ## Deploy Sample BookInfo chart
 
+```
 k label namespace default istio-injection=enabled
+
 k apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/bookinfo/platform/kube/bookinfo.yaml
+```
 
 ## Overview
 
