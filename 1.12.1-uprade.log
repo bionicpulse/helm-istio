@@ -1,0 +1,28 @@
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-5cc87f7c88-qqjcx - version: 1.11.5
+Control Plane - istiod pod - istiod-84f8c8f4c9-stn96 - version: 1.11.5
+
+Upgrade version check passed: 1.11.5 -> 1.12.1.
+
+Upgrade check: Warning!!! The following IOPS will be changed as part of upgrade. Please double check they are correct:
+spec:
+  installPackagePath: /var/folders/w7/m08zssb114bgtsrgy5fcjxbc0000gn/T/istio-install-packages/istio-1.11.5/manifests
+    -> <empty> (REMOVED)
+  values:
+    pilot:
+      env:
+        ENABLE_LEGACY_FSGROUP_INJECTION: <empty> -> false (ADDED)
+
+..........
+Upgrade rollout completed. All Istio control plane pods are running on the target version.
+
+
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-fc64945f7-wprxz - version: 1.12.1
+Control Plane - istiod pod - istiod-6dd78747c7-dql9c - version: 1.12.1
+
+Success. Now the Istio control plane is running at version 1.12.1.
+
+To upgrade the Istio data plane, you will need to re-inject it.
+If you’re using automatic sidecar injection, you can upgrade the sidecar by doing a rolling update for all the pods:
+    kubectl rollout restart deployment --namespace <namespace with auto injection>
+If you’re using manual injection, you can upgrade the sidecar by executing:
+    kubectl apply -f < (istioctl kube-inject -f <original application deployment yaml>)

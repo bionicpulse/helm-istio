@@ -1,0 +1,188 @@
+
+
+kind delete cluster --name playground 
+kind create cluster --name playground --config multi-config.yaml
+
+./istio-1.9.5/bin/istioctl install --set profile=demo --set hub=gcr.io/istio-release -y | tee -a 1.9.5-instsall.log
+./istio-1.9.5/bin/istioctl analyze -A
+k delete deploy istio-egressgateway -n istio-system
+kubectl label namespace default istio-injection=enabled
+k apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/bookinfo/platform/kube/bookinfo.yaml
+./istio-1.10.6/bin/istioctl upgrade --set hub=gcr.io/istio-release -y | tee -a 1.10.6-uprade.log
+k rollout restart deployment
+./istio-1.10.6/bin/istioctl analyze -A
+./istio-1.11.5/bin/istioctl upgrade --set hub=gcr.io/istio-release -y | tee -a 1.11.5-uprade.log
+k rollout restart deployment
+./istio-1.10.6/bin/istioctl analyze -A
+./istio-1.12.1/bin/istioctl upgrade --set hub=gcr.io/istio-release -y | tee -a 1.12.1-uprade.log
+k rollout restart deployment
+./istio-1.10.6/bin/istioctl analyze -A
+
+
+
+
+
+
+➜  istio ./istio-1.9.5/bin/istioctl install --set profile=demo --set hub=gcr.io/istio-release -y | tee -a 1.9.5-instsall.log
+./istio-1.9.5/bin/istioctl analyze -A
+
+✔ Istio core installed                                             
+✔ Istiod installed                                                 
+✔ Egress gateways installed                                        
+✔ Ingress gateways installed                                       
+✔ Installation complete                                            Info [IST0102] (Namespace default) The namespace is not enabled for Istio injection. Run 'kubectl label namespace default istio-injection=enabled' to enable it, or 'kubectl label namespace default istio-injection=disabled' to explicitly mark it as not needing injection.
+➜  istio kubectl label namespace default istio-injection=enabled
+k apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/bookinfo/platform/kube/bookinfo.yaml
+
+namespace/default labeled
+service/details created
+serviceaccount/bookinfo-details created
+deployment.apps/details-v1 created
+service/ratings created
+serviceaccount/bookinfo-ratings created
+deployment.apps/ratings-v1 created
+service/reviews created
+serviceaccount/bookinfo-reviews created
+deployment.apps/reviews-v1 created
+deployment.apps/reviews-v2 created
+deployment.apps/reviews-v3 created
+service/productpage created
+serviceaccount/bookinfo-productpage created
+deployment.apps/productpage-v1 created
+➜  istio ./istio-1.10.6/bin/istioctl upgrade --set hub=gcr.io/istio-release -y | tee -a 1.10.6-uprade.log
+
+2022-01-14T14:27:05.019836Z     info    proto: tag has too few fields: "-"
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-77d5999b54-m8mbb - version: 1.9.5
+Control Plane - istiod pod - istiod-cd6d5db79-djlw9 - version: 1.9.5
+
+Upgrade version check passed: 1.9.5 -> 1.10.6.
+
+Upgrade check: Warning!!! The following IOPS will be changed as part of upgrade. Please double check they are correct:
+spec:
+  installPackagePath: /var/folders/w7/m08zssb114bgtsrgy5fcjxbc0000gn/T/istio-install-packages/istio-1.9.5/manifests
+    -> <empty> (REMOVED)
+  values:
+    global:
+      arch: map[amd64:2 ppc64le:2 s390x:2] -> <empty> (REMOVED)
+    pilot:
+      env:
+        ENABLE_LEGACY_FSGROUP_INJECTION: <empty> -> false (ADDED)
+
+✔ Istio core installed                                             
+✔ Istiod installed                                                 
+✔ Ingress gateways installed                                       
+✔ Installation complete                                            ..........
+Upgrade rollout completed. All Istio control plane pods are running on the target version.
+
+
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-5ff8b87cf9-wfrdz - version: 1.10.6
+Control Plane - istiod pod - istiod-98bdfc88f-72ljp - version: 1.10.6
+
+Success. Now the Istio control plane is running at version 1.10.6.
+
+To upgrade the Istio data plane, you will need to re-inject it.
+If you’re using automatic sidecar injection, you can upgrade the sidecar by doing a rolling update for all the pods:
+    kubectl rollout restart deployment --namespace <namespace with auto injection>
+If you’re using manual injection, you can upgrade the sidecar by executing:
+    kubectl apply -f < (istioctl kube-inject -f <original application deployment yaml>)
+➜  istio k rollout restart deployment
+
+deployment.apps/details-v1 restarted
+deployment.apps/productpage-v1 restarted
+deployment.apps/ratings-v1 restarted
+deployment.apps/reviews-v1 restarted
+deployment.apps/reviews-v2 restarted
+deployment.apps/reviews-v3 restarted
+➜  istio ./istio-1.10.6/bin/istioctl analyze -A
+
+
+✔ No validation issues found when analyzing all namespaces.
+➜  istio ./istio-1.11.5/bin/istioctl upgrade --set hub=gcr.io/istio-release -y | tee -a 1.11.5-uprade.log
+
+2022-01-14T14:38:25.370189Z     info    proto: tag has too few fields: "-"
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-5ff8b87cf9-wfrdz - version: 1.10.6
+Control Plane - istiod pod - istiod-98bdfc88f-72ljp - version: 1.10.6
+
+Upgrade version check passed: 1.10.6 -> 1.11.5.
+
+Upgrade check: Warning!!! The following IOPS will be changed as part of upgrade. Please double check they are correct:
+spec:
+  installPackagePath: /var/folders/w7/m08zssb114bgtsrgy5fcjxbc0000gn/T/istio-install-packages/istio-1.10.6/manifests
+    -> <empty> (REMOVED)
+  values:
+    pilot:
+      env:
+        ENABLE_LEGACY_FSGROUP_INJECTION: <empty> -> false (ADDED)
+
+✔ Istio core installed                                             
+✔ Istiod installed                                                 
+✔ Ingress gateways installed                                       
+✔ Installation complete                                            ..........
+Upgrade rollout completed. All Istio control plane pods are running on the target version.
+
+
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-5cc87f7c88-qqjcx - version: 1.11.5
+Control Plane - istiod pod - istiod-84f8c8f4c9-stn96 - version: 1.11.5
+
+Success. Now the Istio control plane is running at version 1.11.5.
+
+To upgrade the Istio data plane, you will need to re-inject it.
+If you’re using automatic sidecar injection, you can upgrade the sidecar by doing a rolling update for all the pods:
+    kubectl rollout restart deployment --namespace <namespace with auto injection>
+If you’re using manual injection, you can upgrade the sidecar by executing:
+    kubectl apply -f < (istioctl kube-inject -f <original application deployment yaml>)
+➜  istio k rollout restart deployment
+
+deployment.apps/details-v1 restarted
+deployment.apps/productpage-v1 restarted
+deployment.apps/ratings-v1 restarted
+deployment.apps/reviews-v1 restarted
+deployment.apps/reviews-v2 restarted
+deployment.apps/reviews-v3 restarted
+➜  istio ./istio-1.12.1/bin/istioctl upgrade --set hub=gcr.io/istio-release -y | tee -a 1.12.1-uprade.log
+
+2022-01-14T15:03:01.435230Z     info    proto: tag has too few fields: "-"
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-5cc87f7c88-qqjcx - version: 1.11.5
+Control Plane - istiod pod - istiod-84f8c8f4c9-stn96 - version: 1.11.5
+
+Upgrade version check passed: 1.11.5 -> 1.12.1.
+
+Upgrade check: Warning!!! The following IOPS will be changed as part of upgrade. Please double check they are correct:
+spec:
+  installPackagePath: /var/folders/w7/m08zssb114bgtsrgy5fcjxbc0000gn/T/istio-install-packages/istio-1.11.5/manifests
+    -> <empty> (REMOVED)
+  values:
+    pilot:
+      env:
+        ENABLE_LEGACY_FSGROUP_INJECTION: <empty> -> false (ADDED)
+
+✔ Istio core installed                                             
+✔ Istiod installed                                                 
+✔ Ingress gateways installed                                       
+✔ Installation complete                                            ..........
+Upgrade rollout completed. All Istio control plane pods are running on the target version.
+
+
+Control Plane - istio-ingressgateway pod - istio-ingressgateway-fc64945f7-wprxz - version: 1.12.1
+Control Plane - istiod pod - istiod-6dd78747c7-dql9c - version: 1.12.1
+
+Success. Now the Istio control plane is running at version 1.12.1.
+
+To upgrade the Istio data plane, you will need to re-inject it.
+If you’re using automatic sidecar injection, you can upgrade the sidecar by doing a rolling update for all the pods:
+    kubectl rollout restart deployment --namespace <namespace with auto injection>
+If you’re using manual injection, you can upgrade the sidecar by executing:
+    kubectl apply -f < (istioctl kube-inject -f <original application deployment yaml>)
+➜  istio k rollout restart deployment
+
+deployment.apps/details-v1 restarted
+deployment.apps/productpage-v1 restarted
+deployment.apps/ratings-v1 restarted
+deployment.apps/reviews-v1 restarted
+deployment.apps/reviews-v2 restarted
+deployment.apps/reviews-v3 restarted
+➜  istio ./istio-1.10.6/bin/istioctl analyze -A
+
+
+✔ No validation issues found when analyzing all namespaces.
+➜  istio 
